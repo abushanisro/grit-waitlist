@@ -179,7 +179,7 @@ export const WaitlistFormModal = ({ isOpen, onClose }: WaitlistFormModalProps) =
             </Label>
             <Textarea
               id="reason"
-              placeholder="Tell us a bit about yourself and why you want to join Grit"
+              placeholder="Tell us a bit about yourself and why you want to join Grit..."
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               className="w-full min-h-[80px] resize-none"
