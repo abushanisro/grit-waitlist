@@ -10,7 +10,7 @@ export const Footer = () => {
         {/* Main Footer Content */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-8 mb-8">
           {/* Left: Logo & Tagline */}
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 items-start">
             <img
               src={gritLogo}
               alt="Grit Recruitment"
@@ -58,9 +58,16 @@ export const Footer = () => {
 
         {/* Bottom: Copyright */}
         <div className="pt-6 border-t border-primary/10">
-          <p className="text-xs text-muted-foreground text-center md:text-left">
-            Grit Recruitment - {new Date().getFullYear()} All Rights Reserved
-          </p>
+          <div className="flex items-center gap-2">
+            <img
+              src={gritLogo}
+              alt="Grit"
+              className="h-5 w-auto object-contain"
+            />
+            <p className="text-xs text-muted-foreground">
+              Recruitment - {new Date().getFullYear()} All Rights Reserved
+            </p>
+          </div>
         </div>
       </div>
     </footer>
