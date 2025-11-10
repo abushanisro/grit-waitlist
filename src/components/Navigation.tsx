@@ -1,8 +1,11 @@
+import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import gritLogo from "@/assets/grit-logo.png";
+import { WaitlistFormModal } from "./WaitlistFormModal";
 
 export const Navigation = () => {
-  const { openAuthModal, isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
+  const [showWaitlistForm, setShowWaitlistForm] = useState(false);
 
   return (
     <nav className="fixed top-2 left-2 right-2 sm:top-4 sm:left-4 sm:right-4 z-50">
@@ -46,14 +49,14 @@ export const Navigation = () => {
             ) : (
               <>
                 <button
-                  onClick={openAuthModal}
+                  onClick={() => setShowWaitlistForm(true)}
                   className="px-2 sm:px-3 py-1.5 text-foreground font-medium hover:text-primary transition-colors duration-300 text-sm sm:text-base"
                 >
                   Log In
                 </button>
 
                 <button
-                  onClick={openAuthModal}
+                  onClick={() => setShowWaitlistForm(true)}
                   className="px-3 sm:px-4 py-1.5 bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors duration-300 rounded-full text-sm sm:text-base flex items-center gap-1 sm:gap-1.5 whitespace-nowrap"
                 >
                   <span className="hidden sm:inline">Join Waitlist</span>
@@ -65,6 +68,12 @@ export const Navigation = () => {
           </div>
         </div>
       </div>
+
+      {/* Waitlist Form Modal */}
+      <WaitlistFormModal
+        isOpen={showWaitlistForm}
+        onClose={() => setShowWaitlistForm(false)}
+      />
     </nav>
   );
 };

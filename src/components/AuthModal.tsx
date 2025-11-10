@@ -8,7 +8,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Linkedin } from "lucide-react";
-import { signInWithGoogle, signInWithLinkedIn } from "@/lib/firebase";
+import { signInWithGoogle, signInWithLinkedIn } from "@/lib/supabase";
 import { toast } from "sonner";
 
 export const AuthModal = () => {
@@ -18,16 +18,14 @@ export const AuthModal = () => {
   const handleGoogleLogin = async () => {
     try {
       setLoading(true);
-      const { user, userData } = await signInWithGoogle();
-      login({
-        id: user.uid,
-        ...userData,
-      });
-      toast.success("Added to waitlist! We'll notify you soon. 🎉");
+      await signInWithGoogle();
+      // Supabase will redirect to Google OAuth page
+      // After successful auth, user will be redirected back
+      // AuthContext will automatically detect the session
+      closeAuthModal();
     } catch (error: any) {
       console.error("Google login error:", error);
       toast.error(error.message || "Failed to sign in with Google");
-    } finally {
       setLoading(false);
     }
   };
@@ -35,16 +33,14 @@ export const AuthModal = () => {
   const handleLinkedInLogin = async () => {
     try {
       setLoading(true);
-      const { user, userData } = await signInWithLinkedIn();
-      login({
-        id: user.uid,
-        ...userData,
-      });
-      toast.success("Added to waitlist! We'll notify you soon. 🎉");
+      await signInWithLinkedIn();
+      // Supabase will redirect to LinkedIn OAuth page
+      // After successful auth, user will be redirected back
+      // AuthContext will automatically detect the session and save data
+      closeAuthModal();
     } catch (error: any) {
       console.error("LinkedIn login error:", error);
       toast.error(error.message || "Failed to sign in with LinkedIn");
-    } finally {
       setLoading(false);
     }
   };

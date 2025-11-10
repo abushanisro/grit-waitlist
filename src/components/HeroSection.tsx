@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/contexts/AuthContext";
 import ColorBends from "./ColorBends";
+import { WaitlistFormModal } from "./WaitlistFormModal";
 
 export const HeroSection = () => {
   const [scrollY, setScrollY] = useState(0);
+  const [showWaitlistForm, setShowWaitlistForm] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
-  const { openAuthModal } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -70,12 +70,18 @@ export const HeroSection = () => {
         {/* CTA Button */}
         <Button
           size="lg"
-          onClick={openAuthModal}
+          onClick={() => setShowWaitlistForm(true)}
           className="bg-primary/70 hover:bg-primary/80 text-primary-foreground font-bold text-base sm:text-lg px-8 sm:px-10 md:px-12 py-6 sm:py-7 rounded-full hover:shadow-xl transition-all w-full sm:w-auto max-w-xs sm:max-w-none"
         >
           Join Waitlist →
         </Button>
       </div>
+
+      {/* Waitlist Form Modal */}
+      <WaitlistFormModal
+        isOpen={showWaitlistForm}
+        onClose={() => setShowWaitlistForm(false)}
+      />
     </section>
   );
 };

@@ -99,11 +99,19 @@ export const signInWithGoogle = async () => {
   }
 };
 
-// Sign in with LinkedIn (Note: LinkedIn OAuth requires backend setup)
+// Sign in with LinkedIn (Note: LinkedIn OAuth requires Firebase Console setup)
 export const signInWithLinkedIn = async () => {
   try {
+    console.log("🔵 Starting LinkedIn sign-in process...");
+
     const result = await signInWithPopup(auth, linkedInProvider);
     const user = result.user;
+
+    console.log("✅ LinkedIn authentication successful:", {
+      uid: user.uid,
+      displayName: user.displayName,
+      email: user.email,
+    });
 
     const userData = {
       name: user.displayName || "",
@@ -113,14 +121,34 @@ export const signInWithLinkedIn = async () => {
     };
 
     // Save user profile
+    console.log("💾 Saving user profile to Firestore...");
     await saveUserProfile(user.uid, userData);
 
     // Add to waitlist
+    console.log("📝 Adding user to waitlist...");
     await addToWaitlist(user.uid, userData);
 
+    console.log("✅ LinkedIn sign-in completed successfully!");
+
     return { user, userData };
-  } catch (error) {
-    console.error("Error signing in with LinkedIn:", error);
-    throw error;
+  } catch (error: any) {
+    console.error("❌ LinkedIn sign-in error:", {
+      code: error.code,
+      message: error.message,
+      details: error,
+    });
+
+    // Provide user-friendly error messages
+    if (error.code === "auth/operation-not-allowed") {
+      throw new Error("LinkedIn sign-in is not enabled in Firebase Console. Please enable it at: https://console.firebase.google.com/project/grit-ae74c/authentication/providers");
+    } else if (error.code === "auth/popup-closed-by-user") {
+      throw new Error("Sign-in cancelled. Please try again.");
+    } else if (error.code === "auth/unauthorized-domain") {
+      throw new Error("This domain is not authorized. Please check Firebase Console settings.");
+    } else if (error.code === "auth/configuration-not-found") {
+      throw new Error("LinkedIn authentication is not configured in Firebase Console. Please enable it first.");
+    } else {
+      throw new Error(error.message || "Failed to sign in with LinkedIn");
+    }
   }
 };
