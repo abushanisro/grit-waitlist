@@ -1,4 +1,8 @@
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+// CREDIT
+// Component inspired by @BalintFerenczy on X
+// https://codepen.io/BalintFerenczy/pen/KwdoyEN
+import ElectricBorder from './ElectricBorder';
 
 export const FeaturesSection = () => {
   const { elementRef: headerRef, isVisible: headerVisible } = useScrollAnimation({ threshold: 0.2 });
@@ -39,58 +43,74 @@ export const FeaturesSection = () => {
           }`}
         >
           {/* Job Seekers Card */}
-          <div className="group relative p-6 sm:p-8 md:p-10 lg:p-12 rounded-2xl sm:rounded-3xl glass-effect hover:border-primary transition-all duration-500">
-            <div className="absolute inset-0 bg-primary/5 rounded-2xl sm:rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative z-10">
-              <div className="mb-4 sm:mb-6">
-                <h3 className="text-2xl sm:text-2xl md:text-3xl font-bold text-foreground mb-3 sm:mb-4">
-                  For Job Seekers
-                </h3>
-                <p className="text-muted-foreground text-sm sm:text-base md:text-lg leading-relaxed">
-                  Find roles that match your drive, skills, and career aspirations.
-                  Build your future with opportunities designed for growth.
-                </p>
+          <ElectricBorder
+            color="#7df9ff"
+            speed={1}
+            chaos={0.5}
+            thickness={2}
+            style={{ borderRadius: 16 }}
+          >
+            <div className="group relative p-6 sm:p-8 md:p-10 lg:p-12 rounded-2xl sm:rounded-3xl glass-effect hover:border-primary transition-all duration-500">
+              <div className="absolute inset-0 bg-primary/5 rounded-2xl sm:rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative z-10">
+                <div className="mb-4 sm:mb-6">
+                  <h3 className="text-2xl sm:text-2xl md:text-3xl font-bold text-foreground mb-3 sm:mb-4">
+                    For Job Seekers
+                  </h3>
+                  <p className="text-muted-foreground text-sm sm:text-base md:text-lg leading-relaxed">
+                    Find roles that match your drive, skills, and career aspirations.
+                    Build your future with opportunities designed for growth.
+                  </p>
+                </div>
+                <div className="space-y-2 sm:space-y-3 pt-4 sm:pt-6 border-t border-primary/20">
+                  {["Match your skills", "Growth-focused roles", "Career advancement"].map(
+                    (feature) => (
+                      <div key={feature} className="flex items-center gap-2 sm:gap-3 group/item">
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary group-hover/item:scale-150 transition-transform flex-shrink-0"></div>
+                        <span className="text-sm sm:text-base text-foreground/80 group-hover/item:text-primary transition-colors">
+                          {feature}
+                        </span>
+                      </div>
+                    )
+                  )}
+                </div>
               </div>
-              <div className="space-y-2 sm:space-y-3 pt-4 sm:pt-6 border-t border-primary/20">
-                {["Match your skills", "Growth-focused roles", "Career advancement"].map(
-                  (feature) => (
+            </div>
+          </ElectricBorder>
+
+          {/* Employers Card */}
+          <ElectricBorder
+            color="#7df9ff"
+            speed={1}
+            chaos={0.5}
+            thickness={2}
+            style={{ borderRadius: 16 }}
+          >
+            <div className="group relative p-6 sm:p-8 md:p-10 lg:p-12 rounded-2xl sm:rounded-3xl glass-effect hover:border-primary transition-all duration-500">
+              <div className="absolute inset-0 bg-primary/5 rounded-2xl sm:rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative z-10">
+                <div className="mb-4 sm:mb-6">
+                  <h3 className="text-2xl sm:text-2xl md:text-3xl font-bold text-foreground mb-3 sm:mb-4">
+                    For Employers
+                  </h3>
+                  <p className="text-muted-foreground text-sm sm:text-base md:text-lg leading-relaxed">
+                    Connect with top sales talent who have the grit and determination
+                    to drive your business forward.
+                  </p>
+                </div>
+                <div className="space-y-2 sm:space-y-3 pt-4 sm:pt-6 border-t border-primary/20">
+                  {["Quality candidates", "Proven performers", "Fast hiring"].map((feature) => (
                     <div key={feature} className="flex items-center gap-2 sm:gap-3 group/item">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary group-hover/item:scale-150 transition-transform flex-shrink-0"></div>
                       <span className="text-sm sm:text-base text-foreground/80 group-hover/item:text-primary transition-colors">
                         {feature}
                       </span>
                     </div>
-                  )
-                )}
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-
-          {/* Employers Card */}
-          <div className="group relative p-6 sm:p-8 md:p-10 lg:p-12 rounded-2xl sm:rounded-3xl glass-effect hover:border-primary transition-all duration-500">
-            <div className="absolute inset-0 bg-primary/5 rounded-2xl sm:rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative z-10">
-              <div className="mb-4 sm:mb-6">
-                <h3 className="text-2xl sm:text-2xl md:text-3xl font-bold text-foreground mb-3 sm:mb-4">
-                  For Employers
-                </h3>
-                <p className="text-muted-foreground text-sm sm:text-base md:text-lg leading-relaxed">
-                  Connect with top sales talent who have the grit and determination
-                  to drive your business forward.
-                </p>
-              </div>
-              <div className="space-y-2 sm:space-y-3 pt-4 sm:pt-6 border-t border-primary/20">
-                {["Quality candidates", "Proven performers", "Fast hiring"].map((feature) => (
-                  <div key={feature} className="flex items-center gap-2 sm:gap-3 group/item">
-                    <div className="w-1.5 h-1.5 rounded-full bg-primary group-hover/item:scale-150 transition-transform flex-shrink-0"></div>
-                    <span className="text-sm sm:text-base text-foreground/80 group-hover/item:text-primary transition-colors">
-                      {feature}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+          </ElectricBorder>
         </div>
       </div>
     </section>

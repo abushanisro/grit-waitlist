@@ -2,10 +2,12 @@ import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import gritLogo from "@/assets/grit-logo.png";
 import { WaitlistFormModal } from "./WaitlistFormModal";
+import ProfileCard from "./ProfileCard";
 
 export const Navigation = () => {
   const { isAuthenticated, user, logout, openAuthModal } = useAuth();
   const [showWaitlistForm, setShowWaitlistForm] = useState(false);
+  const [showProfileCard, setShowProfileCard] = useState(false);
 
   return (
     <nav className="fixed top-2 left-2 right-2 sm:top-4 sm:left-4 sm:right-4 z-50">
@@ -27,18 +29,21 @@ export const Navigation = () => {
           <div className="flex items-center gap-2 sm:gap-4">
             {isAuthenticated ? (
               <>
-                <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setShowProfileCard(!showProfileCard)}
+                  className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+                >
                   {user?.picture && (
                     <img
                       src={user.picture}
                       alt={user.name}
-                      className="h-8 w-8 rounded-full"
+                      className="h-8 w-8 rounded-full border-2 border-primary/30 hover:border-primary transition-colors"
                     />
                   )}
                   <span className="text-sm font-medium hidden md:inline">
                     {user?.name}
                   </span>
-                </div>
+                </button>
                 <button
                   onClick={logout}
                   className="px-2 sm:px-3 py-1.5 text-foreground font-medium hover:text-primary transition-colors duration-300 text-sm sm:text-base"
@@ -74,6 +79,34 @@ export const Navigation = () => {
         isOpen={showWaitlistForm}
         onClose={() => setShowWaitlistForm(false)}
       />
+
+      {/* Profile Card Modal */}
+      {isAuthenticated && showProfileCard && user && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm"
+          onClick={() => setShowProfileCard(false)}
+        >
+          <div onClick={(e) => e.stopPropagation()}>
+            <ProfileCard
+              name={user.name}
+              title="Sales Professional"
+              handle={user.email.split('@')[0]}
+              status="Online"
+              contactText="Contact Me"
+              avatarUrl={user.picture || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + user.email}
+              miniAvatarUrl={user.picture || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + user.email}
+              showUserInfo={true}
+              enableTilt={true}
+              enableMobileTilt={false}
+              onContactClick={() => {
+                console.log('Contact clicked for:', user.name);
+                setShowProfileCard(false);
+                // You can add contact functionality here
+              }}
+            />
+          </div>
+        </div>
+      )}
     </nav>
   );
 };
