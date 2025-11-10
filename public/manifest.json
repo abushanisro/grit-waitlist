@@ -1,0 +1,31 @@
+{
+  "name": "GRIT - Sales Career Development Platform",
+  "short_name": "GRIT",
+  "description": "Build your sales career with GRIT. Discover opportunities that match your grit, goals, and growth.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#00aeef",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "business",
+    "productivity",
+    "education"
+  ],
+  "lang": "en-US",
+  "dir": "ltr"
+}

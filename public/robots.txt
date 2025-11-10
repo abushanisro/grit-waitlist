@@ -1,3 +1,4 @@
+# Allow major search engines
 User-agent: Googlebot
 Allow: /
 
@@ -10,5 +11,37 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
+# Allow all AI crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Anthropics
+Allow: /
+
+User-agent: YouBot
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+# Fallback rule — allow everything else
 User-agent: *
 Allow: /
+
+# Sitemap
+Sitemap: https://grit.careers/sitemap.xml

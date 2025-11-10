@@ -23,6 +23,7 @@ interface WaitlistFormModalProps {
 export const WaitlistFormModal = ({ isOpen, onClose }: WaitlistFormModalProps) => {
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
   const [reason, setReason] = useState("");
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -45,6 +46,7 @@ export const WaitlistFormModal = ({ isOpen, onClose }: WaitlistFormModalProps) =
           {
             email: email.trim(),
             name: fullName.trim(),
+            phone: phone.trim() || null,
             reason: reason.trim() || null,
             status: 'pending',
             provider: 'email',
@@ -76,6 +78,7 @@ export const WaitlistFormModal = ({ isOpen, onClose }: WaitlistFormModalProps) =
   const handleClose = () => {
     setEmail("");
     setFullName("");
+    setPhone("");
     setReason("");
     setSubmitted(false);
     onClose();
@@ -154,14 +157,29 @@ export const WaitlistFormModal = ({ isOpen, onClose }: WaitlistFormModalProps) =
             />
           </div>
 
+          {/* Phone Number Field */}
+          <div className="space-y-2">
+            <Label htmlFor="phone" className="text-sm font-medium">
+              Phone Number
+            </Label>
+            <Input
+              id="phone"
+              type="tel"
+              placeholder="+1 (555) 123-4567"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="w-full"
+            />
+          </div>
+
           {/* Why do you want to use GRIT? */}
           <div className="space-y-2">
             <Label htmlFor="reason" className="text-sm font-medium">
-              Why do you want to join GRIT?
+              Are you a recruiter or salesperson?
             </Label>
             <Textarea
               id="reason"
-              placeholder="Tell us about your sales career goals..."
+              placeholder="Tell us a bit about yourself and why you want to join Grit"
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               className="w-full min-h-[80px] resize-none"
@@ -177,14 +195,6 @@ export const WaitlistFormModal = ({ isOpen, onClose }: WaitlistFormModalProps) =
             {loading ? "Joining..." : "Submit"}
           </Button>
         </form>
-
-        <p className="text-xs text-center text-muted-foreground mt-4">
-          Please avoid sharing sensitive info like passwords or personal documents
-        </p>
-
-        <p className="text-xs text-center text-muted-foreground">
-          Made with GRIT
-        </p>
       </DialogContent>
     </Dialog>
   );
