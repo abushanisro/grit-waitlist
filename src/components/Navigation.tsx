@@ -4,7 +4,7 @@ import gritLogo from "@/assets/grit-logo.png";
 import { WaitlistFormModal } from "./WaitlistFormModal";
 
 export const Navigation = () => {
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, logout, openAuthModal } = useAuth();
   const [showWaitlistForm, setShowWaitlistForm] = useState(false);
 
   return (
@@ -49,7 +49,7 @@ export const Navigation = () => {
             ) : (
               <>
                 <button
-                  onClick={() => setShowWaitlistForm(true)}
+                  onClick={openAuthModal}
                   className="px-2 sm:px-3 py-1.5 text-foreground font-medium hover:text-primary transition-colors duration-300 text-sm sm:text-base"
                 >
                   Log In

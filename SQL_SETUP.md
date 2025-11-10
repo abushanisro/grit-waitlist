@@ -84,7 +84,7 @@ CREATE POLICY "Users can insert own profile"
 
 ## After Running This:
 
-✅ Email signups will work (no authentication needed)
-✅ Google/LinkedIn signups will work (with OAuth)
-✅ No duplicate emails allowed
-✅ All data is secure with RLS policies
+    Email signups will work (no authentication needed)
+    Google/LinkedIn signups will work (with OAuth)
+    No duplicate emails allowed
+    All data is secure with RLS policies
