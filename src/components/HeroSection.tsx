@@ -67,7 +67,7 @@ export const HeroSection = () => {
         <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground mb-8 sm:mb-10 md:mb-12 max-w-3xl mx-auto leading-relaxed px-4 font-light">
           Discover opportunities that match your{" "}
           <TextType
-            text={["Goals", "Growth", "Grit"]}
+            text={["Goals!", "Growth!", "Grit!"]}
             typingSpeed={75}
             pauseDuration={1500}
             showCursor={true}

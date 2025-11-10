@@ -33,15 +33,18 @@ const ScrollReveal: React.FC<ScrollRevealProps> = ({
   const containerRef = useRef<HTMLHeadingElement>(null);
 
   const splitText = useMemo(() => {
-    const text = typeof children === 'string' ? children : '';
-    return text.split(/(\s+)/).map((word, index) => {
-      if (word.match(/^\s+$/)) return word;
-      return (
-        <span className="word" key={index}>
-          {word}
-        </span>
-      );
-    });
+    if (typeof children === 'string') {
+      return children.split(/(\s+)/).map((word, index) => {
+        if (word.match(/^\s+$/)) return word;
+        return (
+          <span className="word" key={index}>
+            {word}
+          </span>
+        );
+      });
+    }
+    // If children is not a string, wrap it in a word span
+    return <span className="word">{children}</span>;
   }, [children]);
 
   useEffect(() => {
