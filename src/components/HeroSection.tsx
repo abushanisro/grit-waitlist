@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import ColorBends from "./ColorBends";
 import { WaitlistFormModal } from "./WaitlistFormModal";
+import TextType from "./TextType";
 
 export const HeroSection = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -64,7 +65,17 @@ export const HeroSection = () => {
 
         {/* Description */}
         <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground mb-8 sm:mb-10 md:mb-12 max-w-3xl mx-auto leading-relaxed px-4 font-light">
-          Discover opportunities that match your grit, goals, and growth.
+          Discover opportunities that match your{" "}
+          <TextType
+            text={["Goals", "Growth", "Grit"]}
+            typingSpeed={75}
+            pauseDuration={1500}
+            showCursor={true}
+            cursorCharacter="|"
+            as="span"
+            className="inline text-primary font-medium"
+            loop={true}
+          />
         </p>
 
         {/* CTA Button */}

@@ -43,9 +43,6 @@ export const FeaturesSection = () => {
             <div className="absolute inset-0 bg-primary/5 rounded-2xl sm:rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             <div className="relative z-10">
               <div className="mb-4 sm:mb-6">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl sm:rounded-2xl bg-primary/10 flex items-center justify-center mb-4 sm:mb-5 md:mb-6 neon-border">
-                  <div className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 border-2 border-primary rounded-lg sm:rounded-xl"></div>
-                </div>
                 <h3 className="text-2xl sm:text-2xl md:text-3xl font-bold text-foreground mb-3 sm:mb-4">
                   For Job Seekers
                 </h3>
@@ -74,9 +71,6 @@ export const FeaturesSection = () => {
             <div className="absolute inset-0 bg-primary/5 rounded-2xl sm:rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
             <div className="relative z-10">
               <div className="mb-4 sm:mb-6">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl sm:rounded-2xl bg-primary/10 flex items-center justify-center mb-4 sm:mb-5 md:mb-6 neon-border">
-                  <div className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 border-2 border-primary rounded-lg sm:rounded-xl rotate-45"></div>
-                </div>
                 <h3 className="text-2xl sm:text-2xl md:text-3xl font-bold text-foreground mb-3 sm:mb-4">
                   For Employers
                 </h3>

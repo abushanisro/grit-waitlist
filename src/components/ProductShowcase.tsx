@@ -1,4 +1,5 @@
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import gritDemo from "@/assets/grit-demo.svg";
 
 export const ProductShowcase = () => {
   const { elementRef, isVisible } = useScrollAnimation({ threshold: 0.2 });
@@ -26,14 +27,12 @@ export const ProductShowcase = () => {
             </div>
 
             {/* Center content */}
-            <div className="text-center p-6 sm:p-8 md:p-12 relative z-10">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 mx-auto mb-4 sm:mb-6 md:mb-8 rounded-2xl sm:rounded-3xl glass-effect neon-border flex items-center justify-center group hover:scale-110 transition-transform">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 border-2 sm:border-3 md:border-4 border-primary rounded-xl sm:rounded-2xl group-hover:rotate-45 transition-transform"></div>
-              </div>
-              <p className="text-muted-foreground text-base sm:text-lg md:text-xl font-medium mb-2 sm:mb-3 md:mb-4">
-                Platform Preview
-              </p>
-              <p className="text-primary text-xs sm:text-sm">Coming Soon</p>
+            <div className="w-full h-full relative z-10">
+              <img
+                src={gritDemo}
+                alt="Grit Platform Preview"
+                className="w-full h-full object-cover"
+              />
             </div>
 
             {/* Floating elements */}
