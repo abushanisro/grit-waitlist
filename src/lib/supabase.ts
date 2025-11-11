@@ -4,8 +4,15 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-// Initialize Supabase client
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Initialize Supabase client with auth configuration
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true, // This ensures Supabase detects and processes OAuth callback URLs
+    flowType: 'implicit', // Use implicit flow for OAuth
+  },
+});
 
 // User data interface
 export interface UserData {

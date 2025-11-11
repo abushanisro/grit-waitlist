@@ -41,41 +41,89 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   useEffect(() => {
-    // Check current session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        const supabaseUser = session.user;
-        const userData: User = {
-          id: supabaseUser.id,
-          name: supabaseUser.user_metadata?.full_name || supabaseUser.user_metadata?.name || "",
-          email: supabaseUser.email || "",
-          picture: supabaseUser.user_metadata?.avatar_url || supabaseUser.user_metadata?.picture || "",
-          provider: supabaseUser.app_metadata?.provider === "google" ? "google" : "linkedin",
-        };
-        setUser(userData);
+    // Listen for auth changes first
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("🔔 Auth state changed:", event, session?.user?.email);
 
-        // Save user data to database
-        saveUserProfile(userData.id, {
-          name: userData.name,
-          email: userData.email,
-          picture: userData.picture,
-          provider: userData.provider,
-        }).catch(console.error);
+      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
+        if (session?.user) {
+          const supabaseUser = session.user;
+          const userData: User = {
+            id: supabaseUser.id,
+            name: supabaseUser.user_metadata?.full_name || supabaseUser.user_metadata?.name || "",
+            email: supabaseUser.email || "",
+            picture: supabaseUser.user_metadata?.avatar_url || supabaseUser.user_metadata?.picture || "",
+            provider: supabaseUser.app_metadata?.provider === "google" ? "google" : "linkedin",
+          };
 
-        // Add to waitlist
-        addToWaitlist(userData.id, {
-          name: userData.name,
-          email: userData.email,
-          picture: userData.picture,
-          provider: userData.provider,
-        }).catch(console.error);
+          console.log("✅ User authenticated:", userData.email);
+          setUser(userData);
+          setLoading(false);
+
+          // Clean up URL hash after successful OAuth login
+          if (window.location.hash.includes('access_token')) {
+            window.history.replaceState(null, '', window.location.pathname);
+          }
+
+          // Save user data to database
+          try {
+            await saveUserProfile(userData.id, {
+              name: userData.name,
+              email: userData.email,
+              picture: userData.picture,
+              provider: userData.provider,
+            });
+
+            // Add to waitlist
+            const added = await addToWaitlist(userData.id, {
+              name: userData.name,
+              email: userData.email,
+              picture: userData.picture,
+              provider: userData.provider,
+            });
+
+            if (added) {
+              toast.success(`Welcome ${userData.name}! You've been added to the waitlist. 🎉`);
+            } else {
+              toast.success(`Welcome back, ${userData.name}! 👋`);
+            }
+          } catch (error) {
+            console.error("Error saving user data:", error);
+          }
+        }
+      } else if (event === 'SIGNED_OUT') {
+        console.log("👋 User signed out");
+        setUser(null);
+        setLoading(false);
+      } else {
+        // For other events, just check the session
+        if (session?.user) {
+          const supabaseUser = session.user;
+          const userData: User = {
+            id: supabaseUser.id,
+            name: supabaseUser.user_metadata?.full_name || supabaseUser.user_metadata?.name || "",
+            email: supabaseUser.email || "",
+            picture: supabaseUser.user_metadata?.avatar_url || supabaseUser.user_metadata?.picture || "",
+            provider: supabaseUser.app_metadata?.provider === "google" ? "google" : "linkedin",
+          };
+          setUser(userData);
+        } else {
+          setUser(null);
+        }
+        setLoading(false);
       }
-      setLoading(false);
     });
 
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    // Check current session after setting up the listener
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      if (error) {
+        console.error("❌ Error getting session:", error);
+        setLoading(false);
+        return;
+      }
+
       if (session?.user) {
+        console.log("📱 Existing session found:", session.user.email);
         const supabaseUser = session.user;
         const userData: User = {
           id: supabaseUser.id,
@@ -85,24 +133,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           provider: supabaseUser.app_metadata?.provider === "google" ? "google" : "linkedin",
         };
         setUser(userData);
-
-        // Save user data to database
-        saveUserProfile(userData.id, {
-          name: userData.name,
-          email: userData.email,
-          picture: userData.picture,
-          provider: userData.provider,
-        }).catch(console.error);
-
-        // Add to waitlist
-        addToWaitlist(userData.id, {
-          name: userData.name,
-          email: userData.email,
-          picture: userData.picture,
-          provider: userData.provider,
-        }).catch(console.error);
       } else {
-        setUser(null);
+        console.log("ℹ️ No existing session found");
       }
       setLoading(false);
     });
