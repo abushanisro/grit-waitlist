@@ -40,6 +40,27 @@ export const ProductShowcase = () => {
             <div className="absolute bottom-5 right-5 sm:bottom-10 sm:right-10 w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 bg-primary/10 rounded-full blur-xl sm:blur-2xl animate-pulse delay-500"></div>
           </div>
         </div>
+
+        {/* Site Preview Arrow */}
+        <div className="flex flex-col items-center mt-8 sm:mt-12 gap-2 sm:gap-3 animate-bounce">
+          <svg
+            className="w-6 h-6 sm:w-8 sm:h-8 text-primary"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 10l7-7m0 0l7 7m-7-7v18"
+            />
+          </svg>
+          <p className="text-sm sm:text-base text-muted-foreground font-medium">
+            Site Preview
+          </p>
+        </div>
       </div>
     </section>
   );
