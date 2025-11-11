@@ -150,9 +150,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           }
         }
       } else if (event === 'SIGNED_OUT') {
-        console.log("👋 User signed out");
+        console.log("👋 User signed out via event");
         setUser(null);
         setLoading(false);
+
+        // Clear all session storage on sign out event
+        sessionStorage.clear();
       } else {
         // For other events, just check the session
         if (session?.user) {
@@ -212,25 +215,33 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       console.log("🔵 Logout function called");
 
+      // Clear any session storage first
+      sessionStorage.removeItem('grit_new_signup');
+      sessionStorage.removeItem('grit_returning_user');
+      sessionStorage.removeItem('grit_show_thankyou');
+
       // Call Supabase signOut
       await supabaseSignOut();
 
       console.log("✅ Supabase signOut successful");
 
-      // Clear user state
+      // Clear user state immediately
       setUser(null);
-
-      // Clear any session storage
-      sessionStorage.removeItem('grit_new_signup');
-      sessionStorage.removeItem('grit_returning_user');
-      sessionStorage.removeItem('grit_show_thankyou');
+      setLoading(false);
 
       console.log("✅ User state cleared");
 
       // Show success message
       toast.success("👋 Logged out successfully", {
         description: "See you next time!",
+        duration: 2000,
       });
+
+      // Reload the page after a short delay to ensure clean state
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+
     } catch (error: any) {
       console.error("❌ Error logging out:", error);
       toast.error("Failed to log out. Please try again.", {
