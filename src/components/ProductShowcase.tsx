@@ -42,7 +42,7 @@ export const ProductShowcase = () => {
         </div>
 
         {/* Site Preview Arrow */}
-        <div className="flex flex-col items-center mt-8 sm:mt-12 gap-2 sm:gap-3 animate-bounce">
+        <div className="flex flex-col items-center mt-8 sm:mt-12 gap-2 sm:gap-3">
           <svg
             className="w-6 h-6 sm:w-8 sm:h-8 text-primary"
             fill="none"
@@ -59,9 +59,6 @@ export const ProductShowcase = () => {
           </svg>
           <p className="text-sm sm:text-base text-muted-foreground font-medium">
             Site Preview
-          </p>
-          <p className="text-xs sm:text-sm text-muted-foreground/70 max-w-md text-center px-4">
-            See how your sales career takes flight with our platform
           </p>
         </div>
       </div>

@@ -23,7 +23,7 @@ export const FeaturesSection = () => {
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 sm:mb-8 px-2">
             <span className="text-gradient">Your Career</span>
             <br />
-            <span className="text-foreground">Powered by GRIT</span>
+            <span className="text-foreground">Powered by <span className="text-gradient">GRIT</span></span>
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4">
             Where <span className="text-primary font-semibold">ambition meets opportunity</span> —
