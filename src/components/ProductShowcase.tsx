@@ -60,6 +60,9 @@ export const ProductShowcase = () => {
           <p className="text-sm sm:text-base text-muted-foreground font-medium">
             Site Preview
           </p>
+          <p className="text-xs sm:text-sm text-muted-foreground/70 max-w-md text-center px-4">
+            See how your sales career takes flight with our platform
+          </p>
         </div>
       </div>
     </section>
