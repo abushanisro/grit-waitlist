@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { supabase, signOut as supabaseSignOut, addToWaitlist, saveUserProfile } from "@/lib/supabase";
 import { toast } from "sonner";
+import confetti from "canvas-confetti";
 
 interface User {
   id: string;
@@ -40,6 +41,38 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState(true);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
+  // Celebration confetti effect
+  const celebrate = () => {
+    const duration = 2500;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
+
+    const randomInRange = (min: number, max: number) => {
+      return Math.random() * (max - min) + min;
+    };
+
+    const interval: NodeJS.Timeout = setInterval(() => {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      const particleCount = 50 * (timeLeft / duration);
+
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+      });
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+      });
+    }, 250);
+  };
+
   useEffect(() => {
     // Listen for auth changes first
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
@@ -60,10 +93,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           setUser(userData);
           setLoading(false);
 
-          // Clean up URL hash after successful OAuth login
-          if (window.location.hash.includes('access_token')) {
-            window.history.replaceState(null, '', window.location.pathname);
-          }
+          // Check if this is an OAuth callback with hash
+          const isOAuthCallback = window.location.hash.includes('access_token');
 
           // Save user data to database
           try {
@@ -82,10 +113,37 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
               provider: userData.provider,
             });
 
-            if (added) {
-              toast.success(`Welcome ${userData.name}! You've been added to the waitlist. 🎉`);
+            // If this is an OAuth callback, save the welcome state and redirect
+            if (isOAuthCallback) {
+              // Mark that this user just signed up/signed in for celebration after reload
+              if (added) {
+                // New user - show thank you modal after reload
+                sessionStorage.setItem('grit_show_thankyou', JSON.stringify({ name: userData.name, email: userData.email }));
+              } else {
+                // Returning user - show simple welcome toast after reload
+                sessionStorage.setItem('grit_returning_user', JSON.stringify({ name: userData.name }));
+              }
+
+              // Redirect to clean URL - celebration will happen after reload
+              setTimeout(() => {
+                window.location.replace(window.location.pathname);
+              }, 100);
             } else {
-              toast.success(`Welcome back, ${userData.name}! 👋`);
+              // Not an OAuth callback - check if we should show welcome message (after page reload)
+              const returningUserData = sessionStorage.getItem('grit_returning_user');
+
+              if (returningUserData) {
+                // Clear the flag
+                sessionStorage.removeItem('grit_returning_user');
+                const userData = JSON.parse(returningUserData);
+
+                // Returning user - simple welcome
+                toast.success(`👋 Welcome back, ${userData.name}!`, {
+                  duration: 4000,
+                  description: "Great to see you again!",
+                });
+              }
+              // Note: New user celebration is handled by ThankYouModal component
             }
           } catch (error) {
             console.error("Error saving user data:", error);
@@ -152,12 +210,32 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const logout = async () => {
     try {
+      console.log("🔵 Logout function called");
+
+      // Call Supabase signOut
       await supabaseSignOut();
+
+      console.log("✅ Supabase signOut successful");
+
+      // Clear user state
       setUser(null);
-      toast.success("Logged out successfully");
-    } catch (error) {
-      console.error("Error logging out:", error);
-      toast.error("Failed to log out");
+
+      // Clear any session storage
+      sessionStorage.removeItem('grit_new_signup');
+      sessionStorage.removeItem('grit_returning_user');
+      sessionStorage.removeItem('grit_show_thankyou');
+
+      console.log("✅ User state cleared");
+
+      // Show success message
+      toast.success("👋 Logged out successfully", {
+        description: "See you next time!",
+      });
+    } catch (error: any) {
+      console.error("❌ Error logging out:", error);
+      toast.error("Failed to log out. Please try again.", {
+        description: error?.message || "An error occurred",
+      });
     }
   };
 

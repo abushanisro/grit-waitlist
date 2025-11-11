@@ -3,10 +3,26 @@ import { useAuth } from "@/contexts/AuthContext";
 import gritLogo from "@/assets/grit-logo.png";
 import { WaitlistFormModal } from "./WaitlistFormModal";
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
+import { LogOut } from "lucide-react";
 
 export const Navigation = () => {
-  const { isAuthenticated, user, logout, openAuthModal } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
   const [showWaitlistForm, setShowWaitlistForm] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    if (isLoggingOut) return; // Prevent double clicks
+
+    try {
+      setIsLoggingOut(true);
+      console.log("Logout button clicked");
+      await logout();
+    } catch (error) {
+      console.error("Logout error in Navigation:", error);
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   const getInitials = (name: string) => {
     return name
@@ -51,30 +67,24 @@ export const Navigation = () => {
                   </span>
                 </div>
                 <button
-                  onClick={logout}
-                  className="px-2 sm:px-3 py-1.5 text-foreground font-medium hover:text-primary transition-colors duration-300 text-sm sm:text-base"
+                  onClick={handleLogout}
+                  disabled={isLoggingOut}
+                  className="px-2 sm:px-3 py-1.5 text-foreground font-medium hover:text-primary transition-colors duration-300 text-sm sm:text-base flex items-center gap-1.5 group disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Logout"
                 >
-                  Logout
+                  <span className="hidden sm:inline">{isLoggingOut ? "Logging out..." : "Logout"}</span>
+                  <LogOut className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </button>
               </>
             ) : (
-              <>
-                <button
-                  onClick={openAuthModal}
-                  className="px-2 sm:px-3 py-1.5 text-foreground font-medium hover:text-primary transition-colors duration-300 text-sm sm:text-base"
-                >
-                  Log In
-                </button>
-
-                <button
-                  onClick={() => setShowWaitlistForm(true)}
-                  className="px-3 sm:px-4 py-1.5 bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors duration-300 rounded-full text-sm sm:text-base flex items-center gap-1 sm:gap-1.5 whitespace-nowrap"
-                >
-                  <span className="hidden sm:inline">Join Waitlist</span>
-                  <span className="sm:hidden">Join</span>
-                  <span className="transition-transform group-hover:translate-x-0.5">→</span>
-                </button>
-              </>
+              <button
+                onClick={() => setShowWaitlistForm(true)}
+                className="px-3 sm:px-4 py-1.5 bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors duration-300 rounded-full text-sm sm:text-base flex items-center gap-1 sm:gap-1.5 whitespace-nowrap"
+              >
+                <span className="hidden sm:inline">Join Waitlist</span>
+                <span className="sm:hidden">Join</span>
+                <span className="transition-transform group-hover:translate-x-0.5">→</span>
+              </button>
             )}
           </div>
         </div>
