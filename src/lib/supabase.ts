@@ -27,12 +27,16 @@ export const addToWaitlist = async (userId: string, userData: UserData) => {
   try {
     console.log("📝 Adding user to waitlist...");
 
-    // Check if user already exists in waitlist
+    // Check if user already exists in waitlist (by user_id or email)
     const { data: existing, error: checkError } = await supabase
       .from('waitlist')
       .select('*')
-      .eq('user_id', userId)
-      .single();
+      .or(`user_id.eq.${userId},email.eq.${userData.email}`)
+      .maybeSingle();
+
+    if (checkError && checkError.code !== 'PGRST116') {
+      console.error("❌ Error checking waitlist:", checkError);
+    }
 
     if (existing) {
       console.log("ℹ️ User already in waitlist");
@@ -54,6 +58,11 @@ export const addToWaitlist = async (userId: string, userData: UserData) => {
       ]);
 
     if (error) {
+      // Handle duplicate key error (409 Conflict)
+      if (error.code === '23505') {
+        console.log("ℹ️ User already in waitlist (duplicate email)");
+        return false;
+      }
       console.error("❌ Error adding to waitlist:", error);
       throw error;
     }
@@ -62,7 +71,8 @@ export const addToWaitlist = async (userId: string, userData: UserData) => {
     return true;
   } catch (error) {
     console.error("❌ Error in addToWaitlist:", error);
-    throw error;
+    // Don't throw - just return false to indicate not added
+    return false;
   }
 };
 

@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import gritLogo from "@/assets/grit-logo.png";
 import { supabase, signInWithGoogle, signInWithLinkedIn } from "@/lib/supabase";
 import { toast } from "sonner";
-import { CheckCircle2, Linkedin, Sparkles } from "lucide-react";
+import { Linkedin } from "lucide-react";
 import confetti from "canvas-confetti";
 
 interface WaitlistFormModalProps {
@@ -77,6 +77,13 @@ export const WaitlistFormModal = ({ isOpen, onClose }: WaitlistFormModalProps) =
       return;
     }
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
     try {
       setLoading(true);
 
@@ -85,7 +92,7 @@ export const WaitlistFormModal = ({ isOpen, onClose }: WaitlistFormModalProps) =
         .from('waitlist')
         .insert([
           {
-            email: email.trim(),
+            email: email.trim().toLowerCase(),
             name: fullName.trim(),
             phone: phone.trim() || null,
             reason: reason.trim() || null,
@@ -97,24 +104,26 @@ export const WaitlistFormModal = ({ isOpen, onClose }: WaitlistFormModalProps) =
       if (error) {
         if (error.code === '23505') {
           // Duplicate email
-          toast.error("You're already on the waitlist!");
+          toast.error("You're already on the waitlist!", {
+            description: "We'll notify you when we launch!",
+          });
         } else {
           console.error("Waitlist error:", error);
           toast.error("Failed to join waitlist. Please try again.");
         }
+        setLoading(false);
         return;
       }
 
       // Show success state with celebration
       setSubmitted(true);
-      toast.success("🎉 Welcome to GRIT! You're on the waitlist!", {
+      toast.success("Welcome to GRIT!", {
         duration: 5000,
-        description: "We'll notify you when we launch. Get ready to build your sales career!",
+        description: "You're on the waitlist! We'll notify you when we launch.",
       });
     } catch (error) {
       console.error("Error joining waitlist:", error);
       toast.error("Something went wrong. Please try again.");
-    } finally {
       setLoading(false);
     }
   };
@@ -161,36 +170,44 @@ export const WaitlistFormModal = ({ isOpen, onClose }: WaitlistFormModalProps) =
       <Dialog open={isOpen} onOpenChange={handleClose}>
         <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
           <div className="flex flex-col items-center justify-center py-6 sm:py-8 px-2 sm:px-4 text-center relative">
-            {/* Celebration Icon */}
+            {/* Celebration - GRIT Logo */}
             <div className="relative mb-3 sm:mb-4">
-              <CheckCircle2 className="h-12 w-12 sm:h-16 sm:w-16 text-green-500 animate-bounce" />
-              <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-500 absolute -top-1 -right-1 animate-pulse" />
+              <div className="relative p-4 bg-gradient-to-br from-primary/20 to-purple-600/20 rounded-full">
+                <img
+                  src={gritLogo}
+                  alt="GRIT"
+                  className="h-16 w-16 sm:h-20 sm:w-20 object-contain"
+                />
+              </div>
             </div>
 
-            <h2 className="text-xl sm:text-2xl font-bold mb-2 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-              🎉 You're on the list! 🎉
+            <h2 className="text-2xl sm:text-3xl font-bold mb-3 text-primary">
+              🎉 Thank You! 🎉
             </h2>
 
-            <p className="text-sm sm:text-base text-muted-foreground mb-4">
-              Thank you for joining GRIT, <span className="font-semibold text-foreground">{fullName.split(' ')[0]}</span>!
+            <p className="text-base sm:text-lg text-foreground font-semibold mb-2">
+              Welcome, <span className="text-primary">{fullName.split(' ')[0]}</span>!
             </p>
 
-            <div className="bg-gradient-to-r from-primary/10 to-purple-600/10 border border-primary/20 rounded-lg p-3 sm:p-4 mb-4 sm:mb-6 w-full">
-              <p className="text-xs sm:text-sm font-medium">
-                🚀 We're excited to help you build your sales career. You'll be among the first to know when we launch!
+            <p className="text-sm sm:text-base text-muted-foreground mb-4">
+              You're now on the waitlist
+            </p>
+
+            <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 sm:p-5 mb-4 sm:mb-6 w-full">
+              <p className="text-sm sm:text-base font-medium mb-2">
+                We're excited to have you!
+              </p>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                You'll be among the first to know when we launch. Get ready to build your sales career!
               </p>
             </div>
 
             <Button
               onClick={handleClose}
-              className="w-full py-5 sm:py-6 text-sm sm:text-base bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90"
+              className="w-full py-5 sm:py-6 text-sm sm:text-base bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300"
             >
               Continue Exploring
             </Button>
-
-            <p className="text-xs text-muted-foreground mt-3 sm:mt-4 flex items-center gap-1">
-              Made with <span className="text-red-500">♥</span> GRIT
-            </p>
           </div>
         </DialogContent>
       </Dialog>
@@ -199,106 +216,150 @@ export const WaitlistFormModal = ({ isOpen, onClose }: WaitlistFormModalProps) =
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md lg:max-w-lg max-h-[90vh] overflow-y-auto p-4 sm:p-6">
-        <div className="flex flex-col items-center mb-3 sm:mb-4">
-          <img src={gritLogo} alt="GRIT" className="h-10 sm:h-12 mb-3 sm:mb-4" />
-          <DialogHeader className="text-center space-y-1 sm:space-y-2">
-            <DialogTitle className="text-xl sm:text-2xl font-bold">Waitlist Signup</DialogTitle>
-            <DialogDescription className="text-xs sm:text-sm">
-              Join the future of sales career development
+      <DialogContent className="sm:max-w-md lg:max-w-lg max-h-[90vh] overflow-y-auto p-5 sm:p-7" aria-describedby="waitlist-description">
+        <div className="flex flex-col items-center text-center mb-4 sm:mb-5">
+          <img src={gritLogo} alt="GRIT Logo" className="h-12 sm:h-14 mb-4 sm:mb-5" />
+          <DialogHeader className="space-y-2 sm:space-y-2.5">
+            <DialogTitle className="text-2xl sm:text-3xl font-bold text-center">Join the Waitlist</DialogTitle>
+            <DialogDescription id="waitlist-description" className="text-sm sm:text-base text-muted-foreground text-center">
+              Be among the first to experience the future of sales career development
             </DialogDescription>
           </DialogHeader>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5" noValidate>
           {/* Email Field */}
-          <div className="space-y-1.5 sm:space-y-2">
-            <Label htmlFor="email" className="text-xs sm:text-sm font-medium">
-              Email<span className="text-red-500 ml-0.5">*</span>
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-sm sm:text-base font-medium flex items-center gap-1">
+              Email<span className="text-destructive" aria-label="required">*</span>
             </Label>
             <Input
               id="email"
+              name="email"
               type="email"
-              placeholder="m.scott@paper.com"
+              placeholder="your.email@company.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full h-10 sm:h-11 text-sm sm:text-base"
+              autoComplete="email"
+              disabled={loading || oauthLoading}
+              className="w-full h-11 sm:h-12 text-base transition-all focus:scale-[1.01]"
+              aria-describedby="email-hint"
+              aria-invalid={email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())}
             />
+            <p id="email-hint" className="text-xs text-muted-foreground sr-only">
+              Enter a valid email address
+            </p>
           </div>
 
           {/* Full Name Field */}
-          <div className="space-y-1.5 sm:space-y-2">
-            <Label htmlFor="fullName" className="text-xs sm:text-sm font-medium">
-              Full Name<span className="text-red-500 ml-0.5">*</span>
+          <div className="space-y-2">
+            <Label htmlFor="fullName" className="text-sm sm:text-base font-medium flex items-center gap-1">
+              Full Name<span className="text-destructive" aria-label="required">*</span>
             </Label>
             <Input
               id="fullName"
+              name="name"
               type="text"
-              placeholder="Michael Scott"
+              placeholder="John Doe"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               required
-              className="w-full h-10 sm:h-11 text-sm sm:text-base"
+              autoComplete="name"
+              disabled={loading || oauthLoading}
+              className="w-full h-11 sm:h-12 text-base transition-all focus:scale-[1.01]"
+              minLength={2}
+              aria-describedby="name-hint"
             />
+            <p id="name-hint" className="text-xs text-muted-foreground sr-only">
+              Enter your full name
+            </p>
           </div>
 
           {/* Phone Number Field */}
-          <div className="space-y-1.5 sm:space-y-2">
-            <Label htmlFor="phone" className="text-xs sm:text-sm font-medium">
-              Phone Number <span className="text-muted-foreground text-xs">(optional)</span>
+          <div className="space-y-2">
+            <Label htmlFor="phone" className="text-sm sm:text-base font-medium flex items-center gap-2">
+              Phone Number
+              <span className="text-muted-foreground text-xs font-normal">(optional)</span>
             </Label>
             <Input
               id="phone"
+              name="tel"
               type="tel"
               placeholder="+1 (555) 123-4567"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className="w-full h-10 sm:h-11 text-sm sm:text-base"
+              autoComplete="tel"
+              disabled={loading || oauthLoading}
+              className="w-full h-11 sm:h-12 text-base transition-all focus:scale-[1.01]"
+              aria-describedby="phone-hint"
             />
+            <p id="phone-hint" className="text-xs text-muted-foreground">
+              We'll only use this for important updates
+            </p>
           </div>
 
-          {/* Why do you want to use GRIT? */}
-          <div className="space-y-1.5 sm:space-y-2">
-            <Label htmlFor="reason" className="text-xs sm:text-sm font-medium">
-              Are you a recruiter or salesperson? <span className="text-muted-foreground text-xs">(optional)</span>
+          {/* Role/Reason Field */}
+          <div className="space-y-2">
+            <Label htmlFor="reason" className="text-sm sm:text-base font-medium flex items-center gap-2">
+              Are you a recruiter or salesperson?
+              <span className="text-muted-foreground text-xs font-normal">(optional)</span>
             </Label>
             <Textarea
               id="reason"
-              placeholder="Tell us a bit about yourself and why you want to join Grit..."
+              name="reason"
+              placeholder="Tell us about yourself and what you're looking for..."
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              className="w-full min-h-[70px] sm:min-h-[80px] resize-none text-sm sm:text-base"
+              disabled={loading || oauthLoading}
+              className="w-full min-h-[80px] sm:min-h-[90px] resize-none text-base transition-all focus:scale-[1.01]"
+              maxLength={500}
+              aria-describedby="reason-hint"
             />
+            <p id="reason-hint" className="text-xs text-muted-foreground text-right">
+              {reason.length}/500 characters
+            </p>
           </div>
 
           {/* Submit Button */}
           <Button
             type="submit"
             disabled={loading || oauthLoading}
-            className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-5 sm:py-6 rounded-lg text-sm sm:text-base mt-2"
+            className="w-full min-h-[48px] bg-primary hover:bg-primary/90 active:scale-[0.98] text-primary-foreground font-semibold py-3 sm:py-3.5 rounded-lg text-base sm:text-lg mt-2 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+            aria-busy={loading}
           >
-            {loading ? "Joining..." : "Submit"}
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Joining...
+              </span>
+            ) : (
+              "Join Waitlist"
+            )}
           </Button>
 
           {/* Divider */}
-          <div className="relative py-2 sm:py-3">
+          <div className="relative py-3 sm:py-4">
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t border-muted" />
             </div>
-            <div className="relative flex justify-center text-[10px] sm:text-xs uppercase">
-              <span className="bg-background px-2 sm:px-3 text-muted-foreground font-medium">Or sign in with</span>
+            <div className="relative flex justify-center text-xs sm:text-sm uppercase">
+              <span className="bg-background px-3 sm:px-4 text-muted-foreground font-medium">Or continue with</span>
             </div>
           </div>
 
           {/* OAuth Login Buttons */}
-          <div className="space-y-2 sm:space-y-3">
+          <div className="space-y-3">
             {/* Google Sign In */}
             <button
               type="button"
               onClick={handleGoogleLogin}
               disabled={loading || oauthLoading}
-              className="w-full flex items-center justify-center gap-2 sm:gap-3 px-4 sm:px-6 py-2.5 sm:py-3 bg-white hover:bg-gray-50 text-gray-700 font-medium rounded-lg border border-gray-300 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base shadow-sm hover:shadow"
+              aria-label="Sign in with Google"
+              className="w-full min-h-[48px] flex items-center justify-center gap-3 px-5 py-3 bg-white hover:bg-gray-50 active:scale-[0.98] text-gray-700 font-medium rounded-lg border border-gray-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-base shadow-sm hover:shadow-md"
             >
               <svg className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" viewBox="0 0 24 24">
                 <path
@@ -326,16 +387,32 @@ export const WaitlistFormModal = ({ isOpen, onClose }: WaitlistFormModalProps) =
               type="button"
               onClick={handleLinkedInLogin}
               disabled={loading || oauthLoading}
-              className="w-full flex items-center justify-center gap-2 sm:gap-3 px-4 sm:px-6 py-2.5 sm:py-3 bg-[#0A66C2] hover:bg-[#004182] text-white font-medium rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base shadow-sm hover:shadow"
+              aria-label="Sign in with LinkedIn"
+              className="w-full min-h-[48px] flex items-center justify-center gap-3 px-5 py-3 bg-[#0A66C2] hover:bg-[#004182] active:scale-[0.98] text-white font-medium rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-base shadow-sm hover:shadow-md"
             >
-              <Linkedin className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
-              <span>{oauthLoading ? "Signing in..." : "Sign in with LinkedIn"}</span>
+              {oauthLoading ? (
+                <>
+                  <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <span>Signing in...</span>
+                </>
+              ) : (
+                <>
+                  <Linkedin className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
+                  <span>Continue with LinkedIn</span>
+                </>
+              )}
             </button>
           </div>
 
           {/* Privacy Notice */}
-          <p className="text-[10px] sm:text-xs text-center text-muted-foreground pt-2">
-            By continuing, you agree to our Terms of Service and Privacy Policy
+          <p className="text-xs sm:text-sm text-center text-muted-foreground pt-3 leading-relaxed">
+            By continuing, you agree to our{" "}
+            <a href="#" className="text-primary hover:underline focus:underline focus:outline-none">Terms of Service</a>
+            {" "}and{" "}
+            <a href="#" className="text-primary hover:underline focus:underline focus:outline-none">Privacy Policy</a>
           </p>
         </form>
       </DialogContent>

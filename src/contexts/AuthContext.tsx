@@ -74,9 +74,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   useEffect(() => {
-    // Listen for auth changes first
+    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("🔔 Auth state changed:", event, session?.user?.email);
 
       if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
         if (session?.user) {
@@ -89,7 +88,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             provider: supabaseUser.app_metadata?.provider === "google" ? "google" : "linkedin",
           };
 
-          console.log("✅ User authenticated:", userData.email);
           setUser(userData);
           setLoading(false);
 
@@ -150,11 +148,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           }
         }
       } else if (event === 'SIGNED_OUT') {
-        console.log("👋 User signed out via event");
         setUser(null);
         setLoading(false);
-
-        // Clear all session storage on sign out event
         sessionStorage.clear();
       } else {
         // For other events, just check the session
@@ -178,13 +173,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     // Check current session after setting up the listener
     supabase.auth.getSession().then(({ data: { session }, error }) => {
       if (error) {
-        console.error("❌ Error getting session:", error);
         setLoading(false);
         return;
       }
 
       if (session?.user) {
-        console.log("📱 Existing session found:", session.user.email);
         const supabaseUser = session.user;
         const userData: User = {
           id: supabaseUser.id,
@@ -194,8 +187,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           provider: supabaseUser.app_metadata?.provider === "google" ? "google" : "linkedin",
         };
         setUser(userData);
-      } else {
-        console.log("ℹ️ No existing session found");
       }
       setLoading(false);
     });
@@ -213,23 +204,27 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const logout = async () => {
     try {
-      console.log("🔵 Logout function called");
+      // Create a timeout promise
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error("SignOut timeout after 5 seconds")), 5000);
+      });
 
-      // Clear any session storage first
-      sessionStorage.removeItem('grit_new_signup');
-      sessionStorage.removeItem('grit_returning_user');
-      sessionStorage.removeItem('grit_show_thankyou');
+      // Race between signOut and timeout
+      const signOutPromise = supabase.auth.signOut({ scope: 'local' });
 
-      // Call Supabase signOut
-      await supabaseSignOut();
+      const { error } = await Promise.race([signOutPromise, timeoutPromise]) as { error: any };
 
-      console.log("✅ Supabase signOut successful");
+      if (error) {
+        console.error("Supabase signOut error:", error);
+        throw error;
+      }
 
-      // Clear user state immediately
+      // Clear session storage AFTER signout
+      sessionStorage.clear();
+
+      // Clear user state
       setUser(null);
       setLoading(false);
-
-      console.log("✅ User state cleared");
 
       // Show success message
       toast.success("👋 Logged out successfully", {
@@ -237,16 +232,27 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         duration: 2000,
       });
 
-      // Reload the page after a short delay to ensure clean state
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
-
     } catch (error: any) {
-      console.error("❌ Error logging out:", error);
-      toast.error("Failed to log out. Please try again.", {
-        description: error?.message || "An error occurred",
-      });
+      // Even if signOut fails, clear local state
+      if (error.message?.includes("timeout")) {
+        // Timeout is expected - Supabase signOut sometimes hangs
+        // Clear local session anyway
+        sessionStorage.clear();
+        setUser(null);
+        setLoading(false);
+
+        toast.success("👋 Logged out successfully", {
+          description: "See you next time!",
+          duration: 2000,
+        });
+      } else {
+        // Unexpected error - log it and show error to user
+        console.error("Logout error:", error);
+        toast.error("Failed to log out", {
+          description: error?.message || "Please try again",
+        });
+        throw error;
+      }
     }
   };
 

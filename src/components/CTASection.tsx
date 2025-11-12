@@ -31,10 +31,11 @@ export const CTASection = () => {
           <Button
             size="lg"
             onClick={() => setShowWaitlistForm(true)}
-            className="bg-primary/70 hover:bg-primary/80 text-primary-foreground font-bold text-base sm:text-lg px-8 sm:px-10 md:px-12 py-6 sm:py-7 rounded-full hover:shadow-xl transition-all w-full sm:w-auto max-w-xs sm:max-w-none group"
+            className="min-h-[52px] sm:min-h-[56px] bg-primary hover:bg-primary/90 active:scale-95 text-primary-foreground font-bold text-base sm:text-lg lg:text-xl px-8 sm:px-10 md:px-12 py-3.5 sm:py-4 rounded-full hover:shadow-2xl shadow-lg transition-all duration-300 w-full sm:w-auto max-w-sm sm:max-w-md group"
+            aria-label="Join the waitlist"
           >
-            Join waitlist
-            <span className="inline-block ml-2 transition-transform group-hover:translate-x-1">
+            <span>Join Waitlist</span>
+            <span className="inline-block ml-2 transition-transform group-hover:translate-x-1" aria-hidden="true">
               →
             </span>
           </Button>
