@@ -216,21 +216,21 @@ export const WaitlistFormModal = ({ isOpen, onClose }: WaitlistFormModalProps) =
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md lg:max-w-lg max-h-[90vh] overflow-y-auto p-5 sm:p-7" aria-describedby="waitlist-description">
-        <div className="flex flex-col items-center text-center mb-4 sm:mb-5">
-          <img src={gritLogo} alt="GRIT Logo" className="h-12 sm:h-14 mb-4 sm:mb-5" />
-          <DialogHeader className="space-y-2 sm:space-y-2.5">
-            <DialogTitle className="text-2xl sm:text-3xl font-bold text-center">Join the Waitlist</DialogTitle>
+      <DialogContent className="sm:max-w-md lg:max-w-lg max-h-[85vh] sm:max-h-[90vh] overflow-y-auto p-4 sm:p-7 gap-0" aria-describedby="waitlist-description">
+        <div className="flex flex-col items-center text-center mb-3 sm:mb-5">
+          <img src={gritLogo} alt="GRIT Logo" className="h-10 sm:h-14 mb-3 sm:mb-5" />
+          <DialogHeader className="space-y-1.5 sm:space-y-2.5">
+            <DialogTitle className="text-xl sm:text-3xl font-bold text-center">Join the Waitlist</DialogTitle>
             <DialogDescription id="waitlist-description" className="text-sm sm:text-base text-muted-foreground text-center">
               Be among the first to experience the future of sales career development
             </DialogDescription>
           </DialogHeader>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5" noValidate>
+        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-5" noValidate>
           {/* Email Field */}
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-sm sm:text-base font-medium flex items-center gap-1">
+          <div className="space-y-1.5">
+            <Label htmlFor="email" className="text-sm font-medium flex items-center gap-1">
               Email<span className="text-destructive" aria-label="required">*</span>
             </Label>
             <Input
@@ -243,7 +243,7 @@ export const WaitlistFormModal = ({ isOpen, onClose }: WaitlistFormModalProps) =
               required
               autoComplete="email"
               disabled={loading || oauthLoading}
-              className="w-full h-11 sm:h-12 text-base transition-all focus:scale-[1.01]"
+              className="w-full h-10 sm:h-12 text-sm sm:text-base transition-all"
               aria-describedby="email-hint"
               aria-invalid={email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())}
             />
@@ -253,8 +253,8 @@ export const WaitlistFormModal = ({ isOpen, onClose }: WaitlistFormModalProps) =
           </div>
 
           {/* Full Name Field */}
-          <div className="space-y-2">
-            <Label htmlFor="fullName" className="text-sm sm:text-base font-medium flex items-center gap-1">
+          <div className="space-y-1.5">
+            <Label htmlFor="fullName" className="text-sm font-medium flex items-center gap-1">
               Full Name<span className="text-destructive" aria-label="required">*</span>
             </Label>
             <Input
@@ -267,7 +267,7 @@ export const WaitlistFormModal = ({ isOpen, onClose }: WaitlistFormModalProps) =
               required
               autoComplete="name"
               disabled={loading || oauthLoading}
-              className="w-full h-11 sm:h-12 text-base transition-all focus:scale-[1.01]"
+              className="w-full h-10 sm:h-12 text-sm sm:text-base transition-all"
               minLength={2}
               aria-describedby="name-hint"
             />
@@ -277,8 +277,8 @@ export const WaitlistFormModal = ({ isOpen, onClose }: WaitlistFormModalProps) =
           </div>
 
           {/* Phone Number Field */}
-          <div className="space-y-2">
-            <Label htmlFor="phone" className="text-sm sm:text-base font-medium flex items-center gap-2">
+          <div className="space-y-1.5">
+            <Label htmlFor="phone" className="text-sm font-medium flex items-center gap-2">
               Phone Number
               <span className="text-muted-foreground text-xs font-normal">(optional)</span>
             </Label>
@@ -291,33 +291,33 @@ export const WaitlistFormModal = ({ isOpen, onClose }: WaitlistFormModalProps) =
               onChange={(e) => setPhone(e.target.value)}
               autoComplete="tel"
               disabled={loading || oauthLoading}
-              className="w-full h-11 sm:h-12 text-base transition-all focus:scale-[1.01]"
+              className="w-full h-10 sm:h-12 text-sm sm:text-base transition-all"
               aria-describedby="phone-hint"
             />
-            <p id="phone-hint" className="text-xs text-muted-foreground">
+            <p id="phone-hint" className="text-xs text-muted-foreground hidden sm:block">
               We'll only use this for important updates
             </p>
           </div>
 
           {/* Role/Reason Field */}
-          <div className="space-y-2">
-            <Label htmlFor="reason" className="text-sm sm:text-base font-medium flex items-center gap-2">
+          <div className="space-y-1.5">
+            <Label htmlFor="reason" className="text-sm font-medium flex items-center gap-2">
               Are you a recruiter or salesperson?
               <span className="text-muted-foreground text-xs font-normal">(optional)</span>
             </Label>
             <Textarea
               id="reason"
               name="reason"
-              placeholder="Tell us about yourself and what you're looking for..."
+              placeholder="Tell us about yourself..."
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               disabled={loading || oauthLoading}
-              className="w-full min-h-[80px] sm:min-h-[90px] resize-none text-base transition-all focus:scale-[1.01]"
+              className="w-full min-h-[60px] sm:min-h-[90px] resize-none text-sm sm:text-base transition-all"
               maxLength={500}
               aria-describedby="reason-hint"
             />
             <p id="reason-hint" className="text-xs text-muted-foreground text-right">
-              {reason.length}/500 characters
+              {reason.length}/500
             </p>
           </div>
 
@@ -325,12 +325,12 @@ export const WaitlistFormModal = ({ isOpen, onClose }: WaitlistFormModalProps) =
           <Button
             type="submit"
             disabled={loading || oauthLoading}
-            className="w-full min-h-[48px] bg-primary hover:bg-primary/90 active:scale-[0.98] text-primary-foreground font-semibold py-3 sm:py-3.5 rounded-lg text-base sm:text-lg mt-2 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full min-h-[44px] sm:min-h-[48px] bg-primary hover:bg-primary/90 active:scale-[0.98] text-primary-foreground font-semibold py-2.5 sm:py-3.5 rounded-lg text-sm sm:text-lg mt-1 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
             aria-busy={loading}
           >
             {loading ? (
               <span className="flex items-center gap-2">
-                <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
@@ -342,24 +342,24 @@ export const WaitlistFormModal = ({ isOpen, onClose }: WaitlistFormModalProps) =
           </Button>
 
           {/* Divider */}
-          <div className="relative py-3 sm:py-4">
+          <div className="relative py-2 sm:py-4">
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t border-muted" />
             </div>
-            <div className="relative flex justify-center text-xs sm:text-sm uppercase">
-              <span className="bg-background px-3 sm:px-4 text-muted-foreground font-medium">Or continue with</span>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-3 text-muted-foreground font-medium">Or continue with</span>
             </div>
           </div>
 
           {/* OAuth Login Buttons */}
-          <div className="space-y-3">
+          <div className="space-y-2 sm:space-y-3">
             {/* Google Sign In */}
             <button
               type="button"
               onClick={handleGoogleLogin}
               disabled={loading || oauthLoading}
               aria-label="Sign in with Google"
-              className="w-full min-h-[48px] flex items-center justify-center gap-3 px-5 py-3 bg-white hover:bg-gray-50 active:scale-[0.98] text-gray-700 font-medium rounded-lg border border-gray-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-base shadow-sm hover:shadow-md"
+              className="w-full min-h-[44px] sm:min-h-[48px] flex items-center justify-center gap-2.5 px-4 py-2.5 sm:py-3 bg-white hover:bg-gray-50 active:scale-[0.98] text-gray-700 font-medium rounded-lg border border-gray-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base shadow-sm hover:shadow-md"
             >
               <svg className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" viewBox="0 0 24 24">
                 <path
@@ -388,11 +388,11 @@ export const WaitlistFormModal = ({ isOpen, onClose }: WaitlistFormModalProps) =
               onClick={handleLinkedInLogin}
               disabled={loading || oauthLoading}
               aria-label="Sign in with LinkedIn"
-              className="w-full min-h-[48px] flex items-center justify-center gap-3 px-5 py-3 bg-[#0A66C2] hover:bg-[#004182] active:scale-[0.98] text-white font-medium rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-base shadow-sm hover:shadow-md"
+              className="w-full min-h-[44px] sm:min-h-[48px] flex items-center justify-center gap-2.5 px-4 py-2.5 sm:py-3 bg-[#0A66C2] hover:bg-[#004182] active:scale-[0.98] text-white font-medium rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base shadow-sm hover:shadow-md"
             >
               {oauthLoading ? (
                 <>
-                  <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
@@ -400,7 +400,7 @@ export const WaitlistFormModal = ({ isOpen, onClose }: WaitlistFormModalProps) =
                 </>
               ) : (
                 <>
-                  <Linkedin className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
+                  <Linkedin className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" aria-hidden="true" />
                   <span>Continue with LinkedIn</span>
                 </>
               )}
@@ -408,11 +408,11 @@ export const WaitlistFormModal = ({ isOpen, onClose }: WaitlistFormModalProps) =
           </div>
 
           {/* Privacy Notice */}
-          <p className="text-xs sm:text-sm text-center text-muted-foreground pt-3 leading-relaxed">
+          <p className="text-[10px] sm:text-xs text-center text-muted-foreground pt-2 sm:pt-3 leading-relaxed">
             By continuing, you agree to our{" "}
-            <a href="#" className="text-primary hover:underline focus:underline focus:outline-none">Terms of Service</a>
+            <a href="#" className="text-primary hover:underline focus:underline focus:outline-none">Terms</a>
             {" "}and{" "}
-            <a href="#" className="text-primary hover:underline focus:underline focus:outline-none">Privacy Policy</a>
+            <a href="#" className="text-primary hover:underline focus:underline focus:outline-none">Privacy</a>
           </p>
         </form>
       </DialogContent>
