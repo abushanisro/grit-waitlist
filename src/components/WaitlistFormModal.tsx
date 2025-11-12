@@ -124,6 +124,7 @@ export const WaitlistFormModal = ({ isOpen, onClose }: WaitlistFormModalProps) =
     } catch (error) {
       console.error("Error joining waitlist:", error);
       toast.error("Something went wrong. Please try again.");
+    } finally {
       setLoading(false);
     }
   };
@@ -182,7 +183,7 @@ export const WaitlistFormModal = ({ isOpen, onClose }: WaitlistFormModalProps) =
             </div>
 
             <h2 className="text-2xl sm:text-3xl font-bold mb-3 text-primary">
-              🎉 Thank You! 🎉
+              Thank You!
             </h2>
 
             <p className="text-base sm:text-lg text-foreground font-semibold mb-2">
